@@ -192,4 +192,85 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+router.get('/search2', async (req, res) => {
+  const searchTerm = req.query.term;
+
+  try {
+    if (!searchTerm) {
+      const [results] = await db.query(`
+        SELECT 
+          account_id,
+          account_name,
+          account_number,
+          balance,
+          open_date,
+          created_by,
+          account_status
+        FROM account1
+      `);
+
+      const formattedResults = results.map((row) => ({
+        account_id: row.account_id,
+        account_name: row.account_name,
+        account_number: row.account_number,
+        balance: row.balance.toString(),
+        open_date: row.open_date,
+        created_by: row.created_by,
+        account_status: row.account_status || 'ปกติ',
+      }));
+
+      return res.json({
+        success: true,
+        results: formattedResults,
+      });
+    }
+
+    const query = `
+      SELECT 
+        account_id,
+        account_name,
+        account_number,
+        balance,
+        open_date,
+        created_by,
+        account_status
+      FROM account1
+      WHERE 
+        account_number REGEXP ? 
+        OR account_name LIKE ?
+        OR REPLACE(account_number, '', '') LIKE ?
+    `;
+
+    const searchPattern = searchTerm.split('').join('.*');
+    const [results] = await db.query(query, [
+      searchPattern,
+      `%${searchTerm}%`,
+      `%${searchTerm}%`
+    ]);
+
+    const formattedResults = results.map((row) => ({
+      account_id: row.account_id,
+      account_name: row.account_name,
+      account_number: row.account_number,
+      balance: row.balance.toString(),
+      open_date: row.open_date,
+      created_by: row.created_by,
+      account_status: row.account_status || 'ปกติ',
+    }));
+
+    res.json({
+      success: true,
+      results: formattedResults,
+    });
+  } catch (err) {
+    console.error('Error searching accounts:', err);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to search accounts',
+    });
+  }
+});
+
+
+
 export default router;

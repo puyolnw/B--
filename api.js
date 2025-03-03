@@ -6,6 +6,7 @@ import membersRoutes from './api/members.js';
 import accountRouter from './api/account-1.js';
 import transactionsRouter from './api/transactions.js';
 import loanRouter from './api/loan.js';
+import fundRouter from './api/fund-account.js';
 const app = express();
 
 app.use(cors({
@@ -23,6 +24,7 @@ app.use('/api/members', membersRoutes);
 app.use('/api/accounts', accountRouter);
 app.use('/api/transactions', transactionsRouter);
 app.use('/api/loan', loanRouter);
+app.use('/api/fundaccount', fundRouter);
 
 app.get('/', (req, res) => {
   res.send('Welcome to the API');
