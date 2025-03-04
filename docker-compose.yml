@@ -1,0 +1,18 @@
+version: '3.4'
+
+services:
+  b:
+    image: b
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+      DB_PORT: 8457
+      DB_HOST: 202.29.22.52
+      DB_USER: mariadb
+      DB_PASS: qCHQ2iJGPHFsceOvrLYaF63Kc7jLZL4gKAFAPGHzFcFxesGSpugXogL578vzfORb
+      DB_NAME: villagefund
+      JWT_SECRET: suP3r$3cr3t!Key@itrmus&*02564
+    ports:
+      - 8457:8457
